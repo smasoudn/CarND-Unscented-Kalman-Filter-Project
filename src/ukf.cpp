@@ -52,6 +52,16 @@ UKF::UKF() {
 
   Hint: one or more values initialized above might be wildly off...
   */
+
+  // Calculate sigma points
+  MatrixXd col_2 = sqrt(lambda + n_x) * A;
+  MatrixXd col_3 = sqrt(lambda + n_x) * A;
+  Xsig.col(0) = x;
+  for (int i = 0; i < n_x; ++i) {
+	  Xsig.col(i + 1) = x + col_2.col(i);
+	  Xsig.col(i + n_x + 1) = x - col_3.col(i);
+  }
+
 }
 
 UKF::~UKF() {}
