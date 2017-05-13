@@ -51,7 +51,14 @@ void check_files(ifstream& in_file, string& in_name,
 }
 
 int main(int argc, char* argv[]) {
+	//char* argv[3];
+	//int argc = 3;
 
+	//argv[0] = "";
+	//argv[1] = "C:\\Users\\Masoud\\Desktop\\Projects\\Udacity\\CarND-Unscented-Kalman-Filter-Project\\data\\obj_pose-laser-radar-synthetic-input.txt";
+	//argv[1] = "C:\\Users\\Masoud\\Desktop\\Projects\\Udacity\\CarND-Extended-Kalman-Filter-Project\\data\\sample-laser-radar-measurement-data-2.txt";
+	//argv[2] = "output_1.txt";
+	
   check_arguments(argc, argv);
 
   string in_file_name_ = argv[1];
@@ -93,14 +100,15 @@ int main(int argc, char* argv[]) {
       float py;
       iss >> px;
       iss >> py;
+	  if (px == 0 && py == 0)
+		  continue;
       meas_package.raw_measurements_ << px, py;
       iss >> timestamp;
       meas_package.timestamp_ = timestamp;
       measurement_pack_list.push_back(meas_package);
     } else if (sensor_type.compare("R") == 0) {
       // radar measurement
-
-      // read measurements at this timestamp
+      // read measurements at this timestamp		
       meas_package.sensor_type_ = MeasurementPackage::RADAR;
       meas_package.raw_measurements_ = VectorXd(3);
       float ro;
@@ -109,6 +117,8 @@ int main(int argc, char* argv[]) {
       iss >> ro;
       iss >> phi;
       iss >> ro_dot;
+	  if (ro == 0 && phi == 0)
+		  continue;
       meas_package.raw_measurements_ << ro, phi, ro_dot;
       iss >> timestamp;
       meas_package.timestamp_ = timestamp;
@@ -159,9 +169,10 @@ int main(int argc, char* argv[]) {
 
 
   for (size_t k = 0; k < number_of_measurements; ++k) {
-    // Call the UKF-based fusion
+    // Call the UKF-based fusion	  
     ukf.ProcessMeasurement(measurement_pack_list[k]);
-
+	//cout << "====" << endl;
+	//cout << ukf.NIS_laser_ << "   " << ukf.NIS_radar_ << endl;
     // timestamp
     out_file_ << measurement_pack_list[k].timestamp_ << "\t"; // pos1 - est
 
@@ -233,5 +244,6 @@ int main(int argc, char* argv[]) {
   }
 
   cout << "Done!" << endl;
+  getchar();
   return 0;
 }

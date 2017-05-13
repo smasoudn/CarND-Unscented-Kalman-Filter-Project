@@ -15,6 +15,7 @@ class UKF {
 private:
 	void AugmentedSigmaPoints(MatrixXd&);
 	void PredictMeanAndCovariance(VectorXd&, MatrixXd&);
+	void generateSigmaPoints();
 public:
 
   ///* initially set to false, set to true in first call of ProcessMeasurement
@@ -67,9 +68,6 @@ public:
 
   ///* Augmented state dimension
   int n_aug_;
-
-  ///* Radar measurement dimension, radar can measure r, phi, and r_dot
-  int n_z_;
 
   ///* Sigma point spreading parameter
   double lambda_;
